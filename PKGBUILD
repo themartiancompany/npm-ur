@@ -1,7 +1,7 @@
 # Maintainer: Felix Yan <felixonmars@archlinux.org>
 
 pkgname=npm
-pkgver=2.14.2
+pkgver=2.14.3
 pkgrel=1
 pkgdesc='A package manager for javascript'
 arch=('any')
