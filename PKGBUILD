@@ -33,10 +33,6 @@ package() {
   cd cli-$pkgver
   node bin/npm-cli.js install -g -f --prefix="$pkgdir/usr" "$(node bin/npm-cli.js pack | tail -1)"
 
-  # Non-deterministic race in npm gives 777 permissions to random directories.
-  # See https://github.com/npm/npm/issues/9359 for details.
-  chmod -R u=rwX,go=rX "$pkgdir"
-
   # npm installs package.json owned by build user
   # https://bugs.archlinux.org/task/63396
   chown -R root:root "$pkgdir"
@@ -50,8 +46,9 @@ package() {
     "$_npmdir"/bin/node-gyp-bin/node-gyp
 
   install -d "$pkgdir"/usr/share/bash-completion/completions
-  node "$srcdir"/cli-$pkgver/bin/npm-cli.js completion > "$pkgdir"/usr/share/bash-completion/completions/npm
+  node bin/npm-cli.js completion > "$pkgdir"/usr/share/bash-completion/completions/npm
 
+  # Support both `man` and `npm help`
   for mandir in "$pkgdir"/usr/lib/node_modules/npm/man/man?; do
     local dst="$pkgdir"/usr/share/man/"$(basename "$mandir")"
     gzip "$mandir"/*
@@ -59,5 +56,5 @@ package() {
     ln -r -s "$mandir"/* "$dst"
   done
 
-  install -Dm644 "$srcdir"/cli-$pkgver/LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname/
+  install -Dm644 LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname/
 }
