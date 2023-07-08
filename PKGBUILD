@@ -2,7 +2,7 @@
 
 pkgname=npm
 pkgver=8.19.2
-pkgrel=2
+pkgrel=3
 pkgdesc='A package manager for javascript'
 arch=('any')
 url='https://www.npmjs.com/'
@@ -27,6 +27,18 @@ build() {
   cd cli-$pkgver
   node . i --ignore-scripts --no-audit --no-fund
   NODE_PATH=/usr/lib/node_modules make
+
+  # Workaround for https://github.com/npm/cli/issues/780
+  cd man
+  local f name sec title
+  for f in man5/folders.5 man5/install.5 man7/*.7; do
+    sec=${f##*.}
+    name=$(basename "$f" ."$sec")
+    title=$(echo "$name" | tr '[:lower:]' '[:upper:]')
+
+    sed -Ei "s/^\.TH \"$title\"/.TH \"NPM-$title\"/" "$f"
+    mv "$f" "${f%/*}/npm-$name.$sec"
+  done
 }
 
 package() {
