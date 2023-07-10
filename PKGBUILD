@@ -1,4 +1,5 @@
 # Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Maintainer: Daniel M. Capella <polyzen@archlinux.org>
 
 pkgname=npm
 pkgver=9.8.0
@@ -8,6 +9,7 @@ arch=('any')
 url='https://www.npmjs.com/'
 license=('custom:Artistic')
 depends=('nodejs' 'node-gyp' 'nodejs-nopt' 'semver')
+optdepends=("git: for dependencies using Git URL's")
 # libgl: TODO
 # libvips: for sharp (doc build) (disabled as current version of gatsby imports a broken sharp)
 # libxi: for cwebp (doc build)
