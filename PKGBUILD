@@ -3,8 +3,8 @@
 
 pkgname=npm
 pkgver=9.8.0
-pkgrel=1
-pkgdesc='A package manager for javascript'
+pkgrel=2
+pkgdesc='A package manager for JavaScript'
 arch=('any')
 url='https://www.npmjs.com/'
 license=('custom:Artistic')
@@ -35,6 +35,7 @@ package() {
   install -d "$pkgdir"/{usr/bin,usr/share/bash-completion/completions,$_npmdir}
   ln -s $_npmdir/bin/npm-cli.js "$pkgdir"/usr/bin/npm
   ln -s $_npmdir/bin/npx-cli.js "$pkgdir"/usr/bin/npx
+  echo 'globalconfig=/etc/npmrc' > "$pkgdir"/$_npmdir/npmrc
 
   cd package
   cp -r bin index.js lib man node_modules package.json "$pkgdir"/$_npmdir
