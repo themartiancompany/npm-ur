@@ -39,15 +39,13 @@ check() {
 
 package() {
   local _npmdir=/usr/lib/node_modules/$pkgname
-  install -d "$pkgdir"/{usr/bin,usr/share/{bash-completion/completions,licenses/$pkgname}}
-  ln -s $_npmdir/bin/npm-cli.js "$pkgdir"/usr/bin/npm
-  ln -s $_npmdir/bin/npx-cli.js "$pkgdir"/usr/bin/npx
+  install -d "$pkgdir"/usr/share/{bash-completion/completions,licenses/$pkgname}
+  ln -s $_npmdir/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 
   cd npm-cli
-  node . install -g -f --prefix="$pkgdir/usr" "$(node . pack --ignore-scripts | tail -1)"
+  node . install -g --prefix="$pkgdir/usr" "$(node . pack --ignore-scripts | tail -1)"
   node . completion > "$pkgdir"/usr/share/bash-completion/completions/npm
   echo 'globalconfig=/etc/npmrc' > "$pkgdir"/$_npmdir/npmrc
-  ln -s $_npmdir/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 
   cd "$pkgdir"
   # Remove superfluous scripts
