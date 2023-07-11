@@ -3,22 +3,24 @@
 
 pkgname=npm
 pkgver=9.8.0
-pkgrel=2
+pkgrel=3
 pkgdesc='A package manager for JavaScript'
 arch=('any')
 url='https://www.npmjs.com/'
 license=('custom:Artistic')
 depends=('nodejs' 'node-gyp' 'nodejs-nopt' 'semver')
+makedepends=('git')
 optdepends=("git: for dependencies using Git URL's")
-# libgl: TODO
-# libvips: for sharp (doc build) (disabled as current version of gatsby imports a broken sharp)
-# libxi: for cwebp (doc build)
-source=("https://registry.npmjs.org/npm/-/npm-$pkgver.tgz")
-b2sums=('b2042e83b9fd249a15c84b0ab42cdcfdddc334f701ad2dcd91ec6116129158b8bc5dabd5dcd81d44d9d8c7204b35051e97ca8f18cf589adb94004693bcd55f8f')
+source=("npm-cli::git+https://github.com/npm/cli.git#tag=v$pkgver")
+b2sums=('SKIP')
 
-prepare() {
+build() {
+  cd npm-cli
+  node scripts/resetdeps.js
+  node . run build -w docs
+
   # Workaround for https://github.com/npm/cli/issues/780
-  cd package/man
+  cd man
   local f name sec title
   for f in man5/folders.5 man5/install.5 man7/*.7; do
     sec=${f##*.}
@@ -30,20 +32,26 @@ prepare() {
   done
 }
 
+check() {
+  cd npm-cli
+  node . run test --ignore-scripts
+}
+
 package() {
   local _npmdir=/usr/lib/node_modules/$pkgname
-  install -d "$pkgdir"/{usr/bin,usr/share/bash-completion/completions,$_npmdir}
+  install -d "$pkgdir"/{usr/bin,usr/share/{bash-completion/completions,licenses/$pkgname}}
   ln -s $_npmdir/bin/npm-cli.js "$pkgdir"/usr/bin/npm
   ln -s $_npmdir/bin/npx-cli.js "$pkgdir"/usr/bin/npx
-  echo 'globalconfig=/etc/npmrc' > "$pkgdir"/$_npmdir/npmrc
 
-  cd package
-  cp -r bin index.js lib man node_modules package.json "$pkgdir"/$_npmdir
-  node bin/npm-cli.js completion > "$pkgdir"/usr/share/bash-completion/completions/npm
-  install -Dm644 LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname/
+  cd npm-cli
+  node . install -g -f --prefix="$pkgdir/usr" "$(node . pack --ignore-scripts | tail -1)"
+  node . completion > "$pkgdir"/usr/share/bash-completion/completions/npm
+  echo 'globalconfig=/etc/npmrc' > "$pkgdir"/$_npmdir/npmrc
+  ln -s $_npmdir/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
 
   cd "$pkgdir"
-  rm ./$_npmdir/bin/np{m,x}.{cmd,ps1}
+  # Remove superfluous scripts
+  rm -r ./$_npmdir/{bin/np{m,x}{,.{cmd,ps1}},node_modules/.bin}
 
   # Experimental dedup
   rm -r ./$_npmdir/node_modules/{node-gyp,nopt,semver}
