@@ -2,8 +2,8 @@
 # Maintainer: Daniel M. Capella <polyzen@archlinux.org>
 
 pkgname=npm
-pkgver=9.8.0
-pkgrel=3
+pkgver=9.8.1
+pkgrel=1
 pkgdesc='A package manager for JavaScript'
 arch=('any')
 url='https://www.npmjs.com/'
