@@ -2,7 +2,7 @@
 # Maintainer: Daniel M. Capella <polyzen@archlinux.org>
 
 pkgname=npm
-pkgver=10.2.1
+pkgver=10.2.2
 pkgrel=1
 pkgdesc='A package manager for JavaScript'
 arch=('any')
@@ -49,7 +49,7 @@ package() {
 
   cd "$pkgdir"
   # Remove superfluous scripts
-  rm -r ./$_npmdir/{bin/np{m,x}{,.{cmd,ps1}},node_modules/.bin}
+  rm -r ./$_npmdir/{bin/{node-gyp-bin/node-gyp.cmd,np{m,x}{,.{cmd,ps1}}},node_modules/.bin}
 
   # Experimental dedup
   rm -r ./$_npmdir/node_modules/{node-gyp,nopt,semver}
