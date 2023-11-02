@@ -3,7 +3,7 @@
 
 pkgname=npm
 pkgver=10.2.3
-pkgrel=1
+pkgrel=2
 pkgdesc='A package manager for JavaScript'
 arch=('any')
 url='https://www.npmjs.com/'
@@ -49,7 +49,7 @@ package() {
 
   cd "$pkgdir"
   # Remove superfluous scripts
-  rm -r ./$_npmdir/{bin/{node-gyp-bin/node-gyp.cmd,np{m,x}{,.{cmd,ps1}}},node_modules/.bin}
+  rm -r ./$_npmdir/{bin/{node-gyp-bin,np{m,x}{,.{cmd,ps1}}},node_modules/.bin}
 
   # Experimental dedup
   rm -r ./$_npmdir/node_modules/{node-gyp,nopt,semver}
